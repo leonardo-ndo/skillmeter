@@ -1,10 +1,17 @@
 <resources>
     <string name="app_name">Skillmeter</string>
+
     <string name="add_skill">Add Skill</string>
-    <string name="skill_name">Skill Name</string>
-    <string name="knowledge_level">Knowledge Level</string>
-    <string name="field_required">Field %1$s is required</string>
+    <string name="chart">Chart</string>
     <string name="delete_skill">Delete Skill</string>
     <string name="delete_skill_message">Are you sure you want to delete the skill \"%1$s\"?</string>
+    <string name="field_required">Field %1$s is required</string>
+    <string name="knowledge_level">Knowledge Level</string>
+    <string name="list">List</string>
     <string name="save">Save</string>
+    <string name="save_fail">Failed to save</string>
+    <string name="save_success">Saved successfully</string>
+    <string name="save_to_gallery">Save to Gallery</string>
+    <string name="skill_greater_zero">Please set a value greater than zero for %1$s</string>
+    <string name="skill_name">Skill Name</string>
 </resources>

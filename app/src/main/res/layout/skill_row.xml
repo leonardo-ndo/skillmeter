@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground">
+    android:background="?android:attr/selectableItemBackground"
+    android:padding="5dp">
 
     <TextView
         android:id="@+id/tv_skill_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="5dp"
+        android:textColor="@android:color/black"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@id/tv_skill_level"
         app:layout_constraintEnd_toStartOf="@id/iv_delete"
@@ -22,7 +23,6 @@
         android:id="@+id/tv_skill_level"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="5dp"
         android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@id/iv_delete"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,7 +35,7 @@
         android:layout_height="0dp"
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/delete_skill"
-        android:padding="15dp"
+        android:padding="10dp"
         android:src="@drawable/ic_delete_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

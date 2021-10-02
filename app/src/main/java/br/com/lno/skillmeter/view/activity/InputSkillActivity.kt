@@ -1,6 +1,7 @@
 package br.com.lno.skillmeter.view.activity
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -33,8 +34,18 @@ class InputSkillActivity : AppCompatActivity(), View.OnClickListener {
             val skill = it as Skill
 
             binding.skillName.setText(skill.name)
-            binding.skillLevel.value = skill.level.toFloat()
+            binding.skillLevel.value = skill.level
 
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -44,47 +55,60 @@ class InputSkillActivity : AppCompatActivity(), View.OnClickListener {
 
             R.id.bt_save -> {
 
-                if (binding.skillName.text.isNullOrEmpty()) {
+                when {
+                    binding.skillName.text.isNullOrEmpty() -> {
 
-                    Toast.makeText(
-                        this,
-                        getString(R.string.field_required, getString(R.string.skill_name)),
-                        Toast.LENGTH_LONG
-                    ).show()
+                        Toast.makeText(
+                            this,
+                            getString(R.string.field_required, getString(R.string.skill_name)),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                    binding.skillLevel.value == 0F -> {
 
-                } else {
+                        Toast.makeText(
+                            this,
+                            getString(
+                                R.string.skill_greater_zero,
+                                getString(R.string.knowledge_level)
+                            ),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                    else -> {
 
-                    try {
+                        try {
 
-                        if (intent.hasExtra("skill")) {
+                            if (intent.hasExtra("skill")) {
 
-                            val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-                                handleException(throwable)
+                                val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+                                    handleException(throwable)
+                                }
+
+                                val skill = intent.getSerializableExtra("skill") as Skill
+
+                                skillViewModel.update(
+                                    Skill(
+                                        id = skill.id,
+                                        name = binding.skillName.text.toString(),
+                                        level = binding.skillLevel.value
+                                    ), exceptionHandler
+                                )
+
+                            } else {
+                                skillViewModel.create(
+                                    Skill(
+                                        name = binding.skillName.text.toString(),
+                                        level = binding.skillLevel.value
+                                    )
+                                )
                             }
 
-                            val skill = intent.getSerializableExtra("skill") as Skill
+                            finish()
 
-                            skillViewModel.update(
-                                Skill(
-                                    id = skill.id,
-                                    name = binding.skillName.text.toString(),
-                                    level = binding.skillLevel.value.toInt()
-                                ), exceptionHandler
-                            )
-
-                        } else {
-                            skillViewModel.create(
-                                Skill(
-                                    name = binding.skillName.text.toString(),
-                                    level = binding.skillLevel.value.toInt()
-                                )
-                            )
+                        } catch (e: Exception) {
+                            handleException(e)
                         }
-
-                        finish()
-
-                    } catch (e: Exception) {
-                        handleException(e)
                     }
                 }
             }

@@ -17,6 +17,6 @@ data class Skill(
     val name: String,
 
     @ColumnInfo(name = "level")
-    val level: Int
+    val level: Float
 
 ) : Serializable
