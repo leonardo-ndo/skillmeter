@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import br.com.lno.skillmeter.R
 import br.com.lno.skillmeter.model.Skill
+import com.google.android.material.progressindicator.LinearProgressIndicator
 
 class SkillsAdapter(private val itemClickListener: OnItemClickListener?) :
     ListAdapter<Skill, SkillsAdapter.ViewHolder>(SkillsDiff()) {
@@ -44,10 +45,10 @@ class SkillsAdapter(private val itemClickListener: OnItemClickListener?) :
             }
 
             val tvSkillName = itemView.findViewById<TextView>(R.id.tv_skill_name)
-            val tvSkillLevel = itemView.findViewById<TextView>(R.id.tv_skill_level)
+            val tvSkillLevel = itemView.findViewById<LinearProgressIndicator>(R.id.pb_skill_level)
 
             tvSkillName.text = skill.name
-            tvSkillLevel.text = skill.level.toString()
+            tvSkillLevel.progress = skill.level.toInt() * 10
         }
     }
 

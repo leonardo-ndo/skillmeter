@@ -3,11 +3,15 @@ package br.com.lno.skillmeter.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import br.com.lno.skillmeter.model.Skill
 import br.com.lno.skillmeter.model.repository.SkillRepository
 import kotlinx.coroutines.*
 
 class SkillViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val sortBy = MutableLiveData("name")
 
     /**
      * Inserts a [Skill] to the database.
@@ -31,7 +35,13 @@ class SkillViewModel(application: Application) : AndroidViewModel(application) {
      * @return A [LiveData] object containing a list of [Skill]'s
      */
     fun retrieve(): LiveData<List<Skill>> {
-        return SkillRepository.retrieve(getApplication())
+        return Transformations.switchMap(sortBy) {
+            if (it == "level") {
+                SkillRepository.retrieveOrderByLevelDesc(getApplication())
+            } else {
+                SkillRepository.retrieveOrderByNameAsc(getApplication())
+            }
+        }
     }
 
     /**
@@ -63,5 +73,14 @@ class SkillViewModel(application: Application) : AndroidViewModel(application) {
             }
             job.await()
         }
+    }
+
+    /**
+     * Sets the sort method for the list
+     *
+     * @param value Sort method: name or level
+     */
+    fun sortBy(value: String) {
+        sortBy.postValue(value)
     }
 }

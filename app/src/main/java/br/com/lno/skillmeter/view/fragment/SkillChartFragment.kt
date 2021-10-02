@@ -9,6 +9,7 @@ import br.com.lno.skillmeter.R
 import br.com.lno.skillmeter.databinding.FragmentChartBinding
 import br.com.lno.skillmeter.model.Skill
 import br.com.lno.skillmeter.viewmodel.SkillViewModel
+import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
@@ -25,17 +26,22 @@ class SkillChartFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        setHasOptionsMenu(true)
-
         binding = FragmentChartBinding.inflate(layoutInflater)
 
         skillViewModel = ViewModelProvider(this).get(SkillViewModel::class.java)
 
-        binding.pieChart.description.isEnabled = false
+        val description = Description()
+        description.text = getString(R.string.chart_description, getString(R.string.app_name))
+
+        binding.pieChart.description = description
         binding.pieChart.legend.isEnabled = false
 
         skillViewModel.retrieve().observe(viewLifecycleOwner, {
+
+            setHasOptionsMenu(it.isNotEmpty())
+
             fillChart(it)
+
         })
 
         return binding.root

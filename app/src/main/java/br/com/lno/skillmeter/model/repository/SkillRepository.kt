@@ -21,15 +21,28 @@ class SkillRepository {
         }
 
         /**
-         * Retrieves all [Skill]'s from the database.
+         * Retrieves all [Skill]'s from the database, ordering the results by name ASC
          *
          * @param context Application context
          *
          * @return A [LiveData] object containing a list of [Skill]'s
          */
-        fun retrieve(context: Context): LiveData<List<Skill>> {
+        fun retrieveOrderByLevelDesc(context: Context): LiveData<List<Skill>> {
             SkillDatabase.getDatabase(context).also {
-                return it.skillDao().retrieve()
+                return it.skillDao().retrieveOrderByLevelDesc()
+            }
+        }
+
+        /**
+         * Retrieves all [Skill]'s from the database, ordering the results by level DESC.
+         *
+         * @param context Application context
+         *
+         * @return A [LiveData] object containing a list of [Skill]'s
+         */
+        fun retrieveOrderByNameAsc(context: Context): LiveData<List<Skill>> {
+            SkillDatabase.getDatabase(context).also {
+                return it.skillDao().retrieveOrderByNameAsc()
             }
         }
 

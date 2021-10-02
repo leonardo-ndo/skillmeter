@@ -13,21 +13,24 @@
         android:layout_height="wrap_content"
         android:textColor="@android:color/black"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@id/tv_skill_level"
+        app:layout_constraintBottom_toTopOf="@id/pb_skill_level"
         app:layout_constraintEnd_toStartOf="@id/iv_delete"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Lorem ipsum" />
 
-    <TextView
-        android:id="@+id/tv_skill_level"
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/pb_skill_level"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:layout_marginEnd="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/iv_delete"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_skill_name"
-        tools:text="10" />
+        tools:progress="60" />
 
     <ImageView
         android:id="@+id/iv_delete"
@@ -35,8 +38,7 @@
         android:layout_height="0dp"
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/delete_skill"
-        android:padding="10dp"
-        android:src="@drawable/ic_delete_black_24dp"
+        android:src="@drawable/ic_delete_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

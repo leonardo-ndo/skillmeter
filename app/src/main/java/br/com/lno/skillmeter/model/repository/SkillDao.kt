@@ -11,7 +11,10 @@ interface SkillDao {
     fun create(skill: Skill)
 
     @Query("Select * from skills order by name COLLATE NOCASE ASC")
-    fun retrieve(): LiveData<List<Skill>>
+    fun retrieveOrderByNameAsc(): LiveData<List<Skill>>
+
+    @Query("Select * from skills order by level COLLATE NOCASE DESC")
+    fun retrieveOrderByLevelDesc(): LiveData<List<Skill>>
 
     @Update
     fun update(skill: Skill)

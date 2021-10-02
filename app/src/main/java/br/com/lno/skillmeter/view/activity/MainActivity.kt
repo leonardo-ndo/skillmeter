@@ -3,6 +3,7 @@ package br.com.lno.skillmeter.view.activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.forEach
 import br.com.lno.skillmeter.R
 import br.com.lno.skillmeter.databinding.ActivityMainBinding
 import br.com.lno.skillmeter.view.fragment.SkillChartFragment
@@ -22,14 +23,28 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.bottomNavigationView.setOnItemSelectedListener {
+
+            // Disable current item
+            binding.bottomNavigationView.menu.forEach { menuItem ->
+                menuItem.isEnabled = menuItem.itemId != it.itemId
+            }
+
             when (it.itemId) {
                 R.id.menu_list -> {
                     supportFragmentManager.beginTransaction()
+                        .setCustomAnimations(
+                            android.R.anim.fade_in,
+                            android.R.anim.fade_out
+                        )
                         .replace(R.id.fragment_container, SkillListFragment()).commit()
                     true
                 }
                 R.id.menu_chart -> {
                     supportFragmentManager.beginTransaction()
+                        .setCustomAnimations(
+                            android.R.anim.fade_in,
+                            android.R.anim.fade_out
+                        )
                         .replace(R.id.fragment_container, SkillChartFragment()).commit()
                     true
                 }

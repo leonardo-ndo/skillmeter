@@ -2,9 +2,7 @@ package br.com.lno.skillmeter.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -26,9 +24,13 @@ class SkillListFragment : Fragment(), SkillsAdapter.OnItemClickListener {
         savedInstanceState: Bundle?
     ): View {
 
+        setHasOptionsMenu(true)
+
         binding = FragmentListBinding.inflate(layoutInflater)
 
         val adapter = SkillsAdapter(this)
+
+        binding.rvSkills.adapter = adapter
 
         skillViewModel = ViewModelProvider(this).get(SkillViewModel::class.java)
 
@@ -36,9 +38,25 @@ class SkillListFragment : Fragment(), SkillsAdapter.OnItemClickListener {
             adapter.submitList(it)
         })
 
-        binding.rvSkills.adapter = adapter
-
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.list_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_sort_level -> {
+                skillViewModel.sortBy("level")
+                true
+            }
+            R.id.menu_sort_name -> {
+                skillViewModel.sortBy("name")
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onListItemClick(skill: Skill) {
