@@ -34,9 +34,9 @@ class SkillListFragment : Fragment(), SkillsAdapter.OnItemClickListener {
 
         skillViewModel = ViewModelProvider(this).get(SkillViewModel::class.java)
 
-        skillViewModel.retrieve().observe(viewLifecycleOwner, {
+        skillViewModel.retrieve().observe(viewLifecycleOwner) {
             adapter.submitList(it)
-        })
+        }
 
         return binding.root
     }

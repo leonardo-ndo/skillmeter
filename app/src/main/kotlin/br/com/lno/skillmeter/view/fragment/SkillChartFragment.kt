@@ -36,13 +36,13 @@ class SkillChartFragment : Fragment() {
         binding.pieChart.description = description
         binding.pieChart.legend.isEnabled = false
 
-        skillViewModel.retrieve().observe(viewLifecycleOwner, {
+        skillViewModel.retrieve().observe(viewLifecycleOwner) {
 
             setHasOptionsMenu(it.isNotEmpty())
 
             fillChart(it)
 
-        })
+        }
 
         return binding.root
     }
