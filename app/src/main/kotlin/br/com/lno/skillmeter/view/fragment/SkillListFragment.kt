@@ -5,18 +5,21 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import br.com.lno.skillmeter.R
 import br.com.lno.skillmeter.databinding.FragmentListBinding
 import br.com.lno.skillmeter.model.Skill
 import br.com.lno.skillmeter.view.activity.InputSkillActivity
 import br.com.lno.skillmeter.view.adapter.SkillsAdapter
 import br.com.lno.skillmeter.viewmodel.SkillViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SkillListFragment : Fragment(), SkillsAdapter.OnItemClickListener {
 
     private lateinit var binding: FragmentListBinding
-    private lateinit var skillViewModel: SkillViewModel
+
+    private val skillViewModel: SkillViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,10 +35,12 @@ class SkillListFragment : Fragment(), SkillsAdapter.OnItemClickListener {
 
         binding.rvSkills.adapter = adapter
 
-        skillViewModel = ViewModelProvider(this).get(SkillViewModel::class.java)
-
-        skillViewModel.retrieve().observe(viewLifecycleOwner) {
+        skillViewModel.skills.observe(viewLifecycleOwner) {
             adapter.submitList(it)
+        }
+
+        skillViewModel.sortBy.observe(viewLifecycleOwner) {
+            skillViewModel.retrieve(it)
         }
 
         return binding.root

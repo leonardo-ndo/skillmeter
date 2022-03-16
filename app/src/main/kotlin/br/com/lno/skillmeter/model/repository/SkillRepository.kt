@@ -1,73 +1,55 @@
 package br.com.lno.skillmeter.model.repository
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import br.com.lno.skillmeter.model.Skill
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class SkillRepository {
+class SkillRepository @Inject constructor(private val skillDao: SkillDao) {
 
-    companion object {
+    /**
+     * Inserts a [Skill] to the database.
+     *
+     * @param skill [Skill] object to be inserted.
+     */
+    suspend fun create(skill: Skill) = withContext(Dispatchers.IO) {
+        skillDao.create(skill)
+    }
 
-        /**
-         * Inserts a [Skill] to the database.
-         *
-         * @param context Application context
-         * @param skill [Skill] object to be inserted.
-         */
-        fun create(context: Context, skill: Skill) {
-            SkillDatabase.getDatabase(context).also {
-                it.skillDao().create(skill)
-            }
-        }
+    /**
+     * Retrieves all [Skill]'s from the database, ordering the results by name ASC
+     *
+     * @return A [LiveData] object containing a list of [Skill]'s
+     */
+    suspend fun retrieveOrderByLevelDesc(): List<Skill> = withContext(Dispatchers.IO) {
+        skillDao.retrieveOrderByLevelDesc()
+    }
 
-        /**
-         * Retrieves all [Skill]'s from the database, ordering the results by name ASC
-         *
-         * @param context Application context
-         *
-         * @return A [LiveData] object containing a list of [Skill]'s
-         */
-        fun retrieveOrderByLevelDesc(context: Context): LiveData<List<Skill>> {
-            SkillDatabase.getDatabase(context).also {
-                return it.skillDao().retrieveOrderByLevelDesc()
-            }
-        }
+    /**
+     * Retrieves all [Skill]'s from the database, ordering the results by level DESC.
+     *
+     * @return A [LiveData] object containing a list of [Skill]'s
+     */
+    suspend fun retrieveOrderByNameAsc(): List<Skill> = withContext(Dispatchers.IO) {
+        skillDao.retrieveOrderByNameAsc()
+    }
 
-        /**
-         * Retrieves all [Skill]'s from the database, ordering the results by level DESC.
-         *
-         * @param context Application context
-         *
-         * @return A [LiveData] object containing a list of [Skill]'s
-         */
-        fun retrieveOrderByNameAsc(context: Context): LiveData<List<Skill>> {
-            SkillDatabase.getDatabase(context).also {
-                return it.skillDao().retrieveOrderByNameAsc()
-            }
-        }
+    /**
+     * Updates a Skill in the database.
+     *
+     * @param skill [Skill] object to be inserted.
+     */
+    suspend fun update(skill: Skill) = withContext(Dispatchers.IO) {
+        skillDao.update(skill)
+    }
 
-        /**
-         * Updates a Skill in the database.
-         *
-         * @param context Application context
-         * @param skill [Skill] object to be inserted.
-         */
-        fun update(context: Context, skill: Skill) {
-            SkillDatabase.getDatabase(context).also {
-                it.skillDao().update(skill)
-            }
-        }
-
-        /**
-         * Deletes a [Skill] from the database.
-         *
-         * @param context Application context
-         * @param skill [Skill] object to be deleted.
-         */
-        fun delete(context: Context, skill: Skill) {
-            SkillDatabase.getDatabase(context).also {
-                it.skillDao().delete(skill)
-            }
-        }
+    /**
+     * Deletes a [Skill] from the database.
+     *
+     * @param skill [Skill] object to be deleted.
+     */
+    suspend fun delete(skill: Skill) = withContext(Dispatchers.IO) {
+        skillDao.delete(skill)
     }
 }

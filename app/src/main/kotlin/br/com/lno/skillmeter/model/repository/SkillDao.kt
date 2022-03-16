@@ -1,6 +1,5 @@
 package br.com.lno.skillmeter.model.repository
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import br.com.lno.skillmeter.model.Skill
 
@@ -11,10 +10,10 @@ interface SkillDao {
     fun create(skill: Skill)
 
     @Query("Select * from skills order by name COLLATE NOCASE ASC")
-    fun retrieveOrderByNameAsc(): LiveData<List<Skill>>
+    fun retrieveOrderByNameAsc(): List<Skill>
 
     @Query("Select * from skills order by level COLLATE NOCASE DESC")
-    fun retrieveOrderByLevelDesc(): LiveData<List<Skill>>
+    fun retrieveOrderByLevelDesc(): List<Skill>
 
     @Update
     fun update(skill: Skill)

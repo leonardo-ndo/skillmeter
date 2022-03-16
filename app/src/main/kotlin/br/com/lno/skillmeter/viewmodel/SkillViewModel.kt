@@ -1,17 +1,23 @@
 package br.com.lno.skillmeter.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import br.com.lno.skillmeter.model.Skill
 import br.com.lno.skillmeter.model.repository.SkillRepository
-import kotlinx.coroutines.*
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
-class SkillViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class SkillViewModel @Inject constructor(private val skillRepository: SkillRepository) :
+    ViewModel() {
 
-    private val sortBy = MutableLiveData("name")
+    val sortBy = MutableLiveData("name")
+
+    var skills = MutableLiveData<List<Skill>>()
 
     /**
      * Inserts a [Skill] to the database.
@@ -20,43 +26,32 @@ class SkillViewModel(application: Application) : AndroidViewModel(application) {
      *
      * @param skill [Skill] object to be inserted.
      */
-    fun create(skill: Skill) {
-        runBlocking {
-            val job = CoroutineScope(Dispatchers.IO).async {
-                SkillRepository.create(getApplication(), skill)
-            }
-            job.await()
-        }
+    fun create(skill: Skill) = runBlocking {
+        skillRepository.create(skill)
     }
 
     /**
      * Retrieves all [Skill]'s from the database.
      *
+     * @param orderBy Which order the results should follow.
+     *
      * @return A [LiveData] object containing a list of [Skill]'s
      */
-    fun retrieve(): LiveData<List<Skill>> {
-        return Transformations.switchMap(sortBy) {
-            if (it == "level") {
-                SkillRepository.retrieveOrderByLevelDesc(getApplication())
-            } else {
-                SkillRepository.retrieveOrderByNameAsc(getApplication())
-            }
+    fun retrieve(orderBy: String) = viewModelScope.launch {
+        skills.value = if (orderBy == "level") {
+            skillRepository.retrieveOrderByLevelDesc()
+        } else {
+            skillRepository.retrieveOrderByNameAsc()
         }
     }
 
     /**
      * Updates a Skill in the database.
      *
-     * Exceptions are handled through the [CoroutineExceptionHandler] object. This is not very
-     * good in this case, because we can't handle the finish activity behavior.
-     *
      * @param skill [Skill] object to be inserted.
-     * @param exceptionHandler [CoroutineExceptionHandler] object, which will handle any exceptions.
      */
-    fun update(skill: Skill, exceptionHandler: CoroutineExceptionHandler) {
-        CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            SkillRepository.update(getApplication(), skill)
-        }
+    fun update(skill: Skill) = runBlocking {
+        skillRepository.update(skill)
     }
 
     /**
@@ -66,13 +61,8 @@ class SkillViewModel(application: Application) : AndroidViewModel(application) {
      *
      * @param skill [Skill] object to be deleted.
      */
-    fun delete(skill: Skill) {
-        runBlocking {
-            val job = CoroutineScope(Dispatchers.IO).async {
-                SkillRepository.delete(getApplication(), skill)
-            }
-            job.await()
-        }
+    fun delete(skill: Skill) = viewModelScope.launch {
+        skillRepository.delete(skill)
     }
 
     /**

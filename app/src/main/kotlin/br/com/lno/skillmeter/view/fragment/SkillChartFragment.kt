@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import br.com.lno.skillmeter.R
 import br.com.lno.skillmeter.databinding.FragmentChartBinding
 import br.com.lno.skillmeter.model.Skill
@@ -14,11 +14,14 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SkillChartFragment : Fragment() {
 
     private lateinit var binding: FragmentChartBinding
-    private lateinit var skillViewModel: SkillViewModel
+
+    private val skillViewModel: SkillViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,15 +31,15 @@ class SkillChartFragment : Fragment() {
 
         binding = FragmentChartBinding.inflate(layoutInflater)
 
-        skillViewModel = ViewModelProvider(this).get(SkillViewModel::class.java)
-
         val description = Description()
         description.text = getString(R.string.chart_description, getString(R.string.app_name))
 
         binding.pieChart.description = description
         binding.pieChart.legend.isEnabled = false
 
-        skillViewModel.retrieve().observe(viewLifecycleOwner) {
+        skillViewModel.retrieve("level")
+
+        skillViewModel.skills.observe(viewLifecycleOwner) {
 
             setHasOptionsMenu(it.isNotEmpty())
 

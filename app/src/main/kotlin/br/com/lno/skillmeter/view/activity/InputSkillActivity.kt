@@ -4,28 +4,25 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import br.com.lno.skillmeter.R
 import br.com.lno.skillmeter.databinding.ActivityInputBinding
 import br.com.lno.skillmeter.model.Skill
 import br.com.lno.skillmeter.viewmodel.SkillViewModel
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class InputSkillActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var binding: ActivityInputBinding
-    private lateinit var skillViewModel: SkillViewModel
+
+    private val skillViewModel: SkillViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityInputBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        skillViewModel = ViewModelProvider(this)[SkillViewModel::class.java]
 
         binding.btSave.setOnClickListener(this)
 
@@ -81,10 +78,6 @@ class InputSkillActivity : AppCompatActivity(), View.OnClickListener {
 
                             if (intent.hasExtra("skill")) {
 
-                                val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-                                    handleException(throwable)
-                                }
-
                                 val skill = intent.getSerializableExtra("skill") as Skill
 
                                 skillViewModel.update(
@@ -92,7 +85,7 @@ class InputSkillActivity : AppCompatActivity(), View.OnClickListener {
                                         id = skill.id,
                                         name = binding.skillName.text.toString(),
                                         level = binding.skillLevel.value
-                                    ), exceptionHandler
+                                    )
                                 )
 
                             } else {
@@ -121,9 +114,10 @@ class InputSkillActivity : AppCompatActivity(), View.OnClickListener {
      * @param exception [Throwable] object to be handled.
      */
     private fun handleException(exception: Throwable) {
+
         exception.printStackTrace()
-        CoroutineScope(Dispatchers.Main).launch {
-            Toast.makeText(applicationContext, exception.message, Toast.LENGTH_LONG).show()
-        }
+
+        Toast.makeText(applicationContext, exception.message, Toast.LENGTH_LONG).show()
+
     }
 }

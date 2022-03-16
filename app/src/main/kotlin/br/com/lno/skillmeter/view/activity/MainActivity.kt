@@ -8,7 +8,9 @@ import br.com.lno.skillmeter.R
 import br.com.lno.skillmeter.databinding.ActivityMainBinding
 import br.com.lno.skillmeter.view.fragment.SkillChartFragment
 import br.com.lno.skillmeter.view.fragment.SkillListFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding

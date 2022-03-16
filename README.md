@@ -10,3 +10,4 @@ The purpose of this project is to train the following concepts:
 * Room Database
 * LiveData
 * Coroutines
+* Hilt
