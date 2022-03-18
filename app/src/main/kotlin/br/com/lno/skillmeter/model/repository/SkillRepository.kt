@@ -12,8 +12,10 @@ class SkillRepository @Inject constructor(private val skillDao: SkillDao) {
      * Inserts a [Skill] to the database.
      *
      * @param skill [Skill] object to be inserted.
+     *
+     * @return The id for the inserted item.
      */
-    suspend fun create(skill: Skill) = withContext(Dispatchers.IO) {
+    suspend fun create(skill: Skill): Long = withContext(Dispatchers.IO) {
         skillDao.create(skill)
     }
 
@@ -39,8 +41,10 @@ class SkillRepository @Inject constructor(private val skillDao: SkillDao) {
      * Updates a Skill in the database.
      *
      * @param skill [Skill] object to be inserted.
+     *
+     * @return Number of rows successfully updated in the table.
      */
-    suspend fun update(skill: Skill) = withContext(Dispatchers.IO) {
+    suspend fun update(skill: Skill): Int = withContext(Dispatchers.IO) {
         skillDao.update(skill)
     }
 
@@ -48,8 +52,10 @@ class SkillRepository @Inject constructor(private val skillDao: SkillDao) {
      * Deletes a [Skill] from the database.
      *
      * @param skill [Skill] object to be deleted.
+     *
+     * @return Number of rows successfully deleted in the table.
      */
-    suspend fun delete(skill: Skill) = withContext(Dispatchers.IO) {
+    suspend fun delete(skill: Skill): Int = withContext(Dispatchers.IO) {
         skillDao.delete(skill)
     }
 }

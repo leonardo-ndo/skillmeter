@@ -34,6 +34,13 @@ class InputSkillActivity : AppCompatActivity(), View.OnClickListener {
             binding.skillLevel.value = skill.level
 
         }
+
+        skillViewModel.result.observe(this) {
+            when (it) {
+                is SkillViewModel.SkillResult.Success -> finish()
+                is SkillViewModel.SkillResult.Error -> handleException(it.exception)
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -74,33 +81,25 @@ class InputSkillActivity : AppCompatActivity(), View.OnClickListener {
                     }
                     else -> {
 
-                        try {
+                        if (intent.hasExtra("skill")) {
 
-                            if (intent.hasExtra("skill")) {
+                            val skill = intent.getSerializableExtra("skill") as Skill
 
-                                val skill = intent.getSerializableExtra("skill") as Skill
-
-                                skillViewModel.update(
-                                    Skill(
-                                        id = skill.id,
-                                        name = binding.skillName.text.toString(),
-                                        level = binding.skillLevel.value
-                                    )
+                            skillViewModel.update(
+                                Skill(
+                                    id = skill.id,
+                                    name = binding.skillName.text.toString(),
+                                    level = binding.skillLevel.value
                                 )
+                            )
 
-                            } else {
-                                skillViewModel.create(
-                                    Skill(
-                                        name = binding.skillName.text.toString(),
-                                        level = binding.skillLevel.value
-                                    )
+                        } else {
+                            skillViewModel.create(
+                                Skill(
+                                    name = binding.skillName.text.toString(),
+                                    level = binding.skillLevel.value
                                 )
-                            }
-
-                            finish()
-
-                        } catch (e: Exception) {
-                            handleException(e)
+                            )
                         }
                     }
                 }

@@ -8,7 +8,6 @@ import br.com.lno.skillmeter.model.Skill
 import br.com.lno.skillmeter.model.repository.SkillRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,6 +18,8 @@ class SkillViewModel @Inject constructor(private val skillRepository: SkillRepos
 
     var skills = MutableLiveData<List<Skill>>()
 
+    val result = MutableLiveData<SkillResult>()
+
     /**
      * Inserts a [Skill] to the database.
      *
@@ -26,8 +27,12 @@ class SkillViewModel @Inject constructor(private val skillRepository: SkillRepos
      *
      * @param skill [Skill] object to be inserted.
      */
-    fun create(skill: Skill) = runBlocking {
-        skillRepository.create(skill)
+    fun create(skill: Skill) = viewModelScope.launch {
+        try {
+            result.postValue(SkillResult.Success(skillRepository.create(skill)))
+        } catch (e: Exception) {
+            result.postValue(SkillResult.Error(e))
+        }
     }
 
     /**
@@ -50,8 +55,12 @@ class SkillViewModel @Inject constructor(private val skillRepository: SkillRepos
      *
      * @param skill [Skill] object to be inserted.
      */
-    fun update(skill: Skill) = runBlocking {
-        skillRepository.update(skill)
+    fun update(skill: Skill) = viewModelScope.launch {
+        try {
+            result.postValue(SkillResult.Success(skillRepository.update(skill)))
+        } catch (e: Exception) {
+            result.postValue(SkillResult.Error(e))
+        }
     }
 
     /**
@@ -62,7 +71,11 @@ class SkillViewModel @Inject constructor(private val skillRepository: SkillRepos
      * @param skill [Skill] object to be deleted.
      */
     fun delete(skill: Skill) = viewModelScope.launch {
-        skillRepository.delete(skill)
+        try {
+            result.postValue(SkillResult.Success(skillRepository.delete(skill)))
+        } catch (e: Exception) {
+            result.postValue(SkillResult.Error(e))
+        }
     }
 
     /**
@@ -72,5 +85,10 @@ class SkillViewModel @Inject constructor(private val skillRepository: SkillRepos
      */
     fun sortBy(value: String) {
         sortBy.postValue(value)
+    }
+
+    sealed class SkillResult {
+        data class Success(val result: Number) : SkillResult()
+        data class Error(val exception: Exception) : SkillResult()
     }
 }

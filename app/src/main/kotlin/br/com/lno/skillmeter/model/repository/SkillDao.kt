@@ -7,7 +7,7 @@ import br.com.lno.skillmeter.model.Skill
 interface SkillDao {
 
     @Insert
-    fun create(skill: Skill)
+    fun create(skill: Skill): Long
 
     @Query("Select * from skills order by name COLLATE NOCASE ASC")
     fun retrieveOrderByNameAsc(): List<Skill>
@@ -16,9 +16,9 @@ interface SkillDao {
     fun retrieveOrderByLevelDesc(): List<Skill>
 
     @Update
-    fun update(skill: Skill)
+    fun update(skill: Skill): Int
 
     @Delete
-    fun delete(skill: Skill)
+    fun delete(skill: Skill): Int
 
 }
