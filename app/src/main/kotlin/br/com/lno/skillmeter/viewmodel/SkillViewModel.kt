@@ -15,9 +15,7 @@ class SkillViewModel @Inject constructor(private val skillRepository: SkillRepos
     ViewModel() {
 
     val sortBy = MutableLiveData("name")
-
     var skills = MutableLiveData<List<Skill>>()
-
     val result = MutableLiveData<SkillResult>()
 
     /**
@@ -38,12 +36,10 @@ class SkillViewModel @Inject constructor(private val skillRepository: SkillRepos
     /**
      * Retrieves all [Skill]'s from the database.
      *
-     * @param orderBy Which order the results should follow.
-     *
      * @return A [LiveData] object containing a list of [Skill]'s
      */
-    fun retrieve(orderBy: String) = viewModelScope.launch {
-        skills.value = if (orderBy == "level") {
+    fun retrieve() = viewModelScope.launch {
+        skills.value = if (sortBy.value == "level") {
             skillRepository.retrieveOrderByLevelDesc()
         } else {
             skillRepository.retrieveOrderByNameAsc()

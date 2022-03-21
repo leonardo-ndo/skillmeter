@@ -37,7 +37,7 @@ class SkillChartFragment : Fragment() {
         binding.pieChart.description = description
         binding.pieChart.legend.isEnabled = false
 
-        skillViewModel.retrieve("level")
+        skillViewModel.retrieve()
 
         skillViewModel.skills.observe(viewLifecycleOwner) {
 

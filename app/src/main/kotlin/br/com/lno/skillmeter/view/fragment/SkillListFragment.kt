@@ -40,7 +40,11 @@ class SkillListFragment : Fragment(), SkillsAdapter.OnItemClickListener {
         }
 
         skillViewModel.sortBy.observe(viewLifecycleOwner) {
-            skillViewModel.retrieve(it)
+            skillViewModel.retrieve()
+        }
+
+        skillViewModel.result.observe(viewLifecycleOwner) {
+            skillViewModel.retrieve()
         }
 
         return binding.root
