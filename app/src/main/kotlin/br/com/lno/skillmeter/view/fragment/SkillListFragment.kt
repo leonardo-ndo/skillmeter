@@ -2,10 +2,15 @@ package br.com.lno.skillmeter.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import br.com.lno.skillmeter.R
 import br.com.lno.skillmeter.databinding.FragmentListBinding
 import br.com.lno.skillmeter.model.Skill
@@ -13,13 +18,21 @@ import br.com.lno.skillmeter.view.activity.InputSkillActivity
 import br.com.lno.skillmeter.view.adapter.SkillsAdapter
 import br.com.lno.skillmeter.viewmodel.SkillViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SkillListFragment : Fragment(), SkillsAdapter.OnItemClickListener {
 
-    private lateinit var binding: FragmentListBinding
+    private val skillViewModel by viewModels<SkillViewModel>()
 
-    private val skillViewModel: SkillViewModel by viewModels()
+    private val binding by lazy {
+        FragmentListBinding.inflate(layoutInflater)
+    }
+
+    private val skillsAdapter by lazy {
+        SkillsAdapter(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,42 +42,29 @@ class SkillListFragment : Fragment(), SkillsAdapter.OnItemClickListener {
 
         setHasOptionsMenu(true)
 
-        binding = FragmentListBinding.inflate(layoutInflater)
-
-        val adapter = SkillsAdapter(this)
-
-        binding.rvSkills.adapter = adapter
-
-        skillViewModel.skills.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
-        }
-
-        skillViewModel.sortBy.observe(viewLifecycleOwner) {
-            skillViewModel.retrieve()
-        }
-
-        skillViewModel.result.observe(viewLifecycleOwner) {
-            skillViewModel.retrieve()
-        }
+        binding.rvSkills.adapter = skillsAdapter
 
         return binding.root
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.list_menu, menu)
-    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.menu_sort_level -> {
-                skillViewModel.sortBy("level")
-                true
+        super.onViewCreated(view, savedInstanceState)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+
+            /**
+             * For multiple collects, use it like this.
+             * Check SkillChartFragment if only one collect is required.
+             */
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                skillViewModel.skills().collect {
+                    skillsAdapter.submitList(it)
+                }
+                /**
+                 * Other collects go here
+                 */
             }
-            R.id.menu_sort_name -> {
-                skillViewModel.sortBy("name")
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
         }
     }
 

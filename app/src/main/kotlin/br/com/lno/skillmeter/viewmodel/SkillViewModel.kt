@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import br.com.lno.skillmeter.model.Skill
 import br.com.lno.skillmeter.model.repository.SkillRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -14,8 +15,6 @@ import javax.inject.Inject
 class SkillViewModel @Inject constructor(private val skillRepository: SkillRepository) :
     ViewModel() {
 
-    val sortBy = MutableLiveData("name")
-    var skills = MutableLiveData<List<Skill>>()
     val result = MutableLiveData<SkillResult>()
 
     /**
@@ -38,12 +37,8 @@ class SkillViewModel @Inject constructor(private val skillRepository: SkillRepos
      *
      * @return A [LiveData] object containing a list of [Skill]'s
      */
-    fun retrieve() = viewModelScope.launch {
-        skills.value = if (sortBy.value == "level") {
-            skillRepository.retrieveOrderByLevelDesc()
-        } else {
-            skillRepository.retrieveOrderByNameAsc()
-        }
+    suspend fun skills(): Flow<List<Skill>> {
+        return skillRepository.retrieve()
     }
 
     /**
@@ -72,15 +67,6 @@ class SkillViewModel @Inject constructor(private val skillRepository: SkillRepos
         } catch (e: Exception) {
             result.postValue(SkillResult.Error(e))
         }
-    }
-
-    /**
-     * Sets the sort method for the list
-     *
-     * @param value Sort method: name or level
-     */
-    fun sortBy(value: String) {
-        sortBy.postValue(value)
     }
 
     sealed class SkillResult {

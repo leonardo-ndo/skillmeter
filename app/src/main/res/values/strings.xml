@@ -15,6 +15,4 @@
     <string name="save_to_gallery">Save to Gallery</string>
     <string name="skill_greater_zero">Please set a value greater than zero for %1$s</string>
     <string name="skill_name">Skill Name</string>
-    <string name="sort_by_level">Sort by Level</string>
-    <string name="sort_by_name">Sort by Name</string>
 </resources>

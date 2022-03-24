@@ -5,6 +5,9 @@ import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import br.com.lno.skillmeter.R
 import br.com.lno.skillmeter.databinding.FragmentChartBinding
 import br.com.lno.skillmeter.model.Skill
@@ -15,13 +18,17 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SkillChartFragment : Fragment() {
 
-    private lateinit var binding: FragmentChartBinding
+    private val skillViewModel by viewModels<SkillViewModel>()
 
-    private val skillViewModel: SkillViewModel by viewModels()
+    private val binding by lazy {
+        FragmentChartBinding.inflate(layoutInflater)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,25 +36,32 @@ class SkillChartFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        binding = FragmentChartBinding.inflate(layoutInflater)
-
         val description = Description()
         description.text = getString(R.string.chart_description, getString(R.string.app_name))
 
         binding.pieChart.description = description
         binding.pieChart.legend.isEnabled = false
 
-        skillViewModel.retrieve()
-
-        skillViewModel.skills.observe(viewLifecycleOwner) {
-
-            setHasOptionsMenu(it.isNotEmpty())
-
-            fillChart(it)
-
-        }
-
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        super.onViewCreated(view, savedInstanceState)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+
+            /**
+             * When you have only one flow to collect, we can use like this.
+             * Check SkillListFragment for multiple collects.
+             */
+            skillViewModel.skills()
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collect {
+                    setHasOptionsMenu(it.isNotEmpty())
+                    fillChart(it)
+                }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

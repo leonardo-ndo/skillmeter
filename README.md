@@ -9,5 +9,5 @@ The purpose of this project is to train the following concepts:
 * View Binding
 * Room Database
 * LiveData
-* Coroutines
+* Coroutines / Flow
 * Hilt
