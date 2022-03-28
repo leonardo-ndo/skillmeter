@@ -8,18 +8,17 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import javax.inject.Named
 
 @Module
 @InstallIn(SingletonComponent::class)
-object DatabaseModule {
+object DatabaseModuleTest {
 
     @Provides
-    fun provideSkillDao(skillDatabase: SkillDatabase) = skillDatabase.skillDao()
-
-    @Provides
-    @Singleton
-    fun provideDatabase(@ApplicationContext context: Context) =
-        Room.databaseBuilder(context, SkillDatabase::class.java, "SKILL_DATABASE.db")
-            .fallbackToDestructiveMigration().build()
+    @Named("test_db")
+    fun provideInMemoryDatabase(@ApplicationContext context: Context) =
+        Room
+            .inMemoryDatabaseBuilder(context, SkillDatabase::class.java)
+            .allowMainThreadQueries()
+            .build()
 }

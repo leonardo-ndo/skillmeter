@@ -11,7 +11,7 @@ data class Skill(
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    val id: Int? = null,
+    val id: Long? = null,
 
     @ColumnInfo(name = "name")
     val name: String,
