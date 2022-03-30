@@ -43,7 +43,7 @@ class SkillDaoTest {
         skillDao.create(skill2)
         skillDao.create(skill3)
 
-        val allSkills = skillDao.retrieve().firstOrNull()
+        val allSkills = skillDao.retrieveFlow().firstOrNull()
 
         Assert.assertTrue(allSkills?.containsAll(listOf(skill1, skill2, skill3)) ?: false)
 
@@ -73,7 +73,7 @@ class SkillDaoTest {
 
         skillDao.update(updatedSkill)
 
-        val allSkills = skillDao.retrieve().firstOrNull()
+        val allSkills = skillDao.retrieveFlow().firstOrNull()
 
         Assert.assertTrue(allSkills?.contains(updatedSkill) ?: false)
 
@@ -104,7 +104,7 @@ class SkillDaoTest {
 
         skillDao.delete(skill1)
 
-        val allSkills = skillDao.retrieve().firstOrNull() ?: listOf()
+        val allSkills = skillDao.retrieveFlow().firstOrNull() ?: listOf()
 
         Assert.assertTrue(!allSkills.contains(skill1))
 

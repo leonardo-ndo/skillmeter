@@ -9,8 +9,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import br.com.lno.skillmeter.R
 import br.com.lno.skillmeter.databinding.FragmentListBinding
 import br.com.lno.skillmeter.model.Skill
@@ -54,17 +54,31 @@ class SkillListFragment : Fragment(), SkillsAdapter.OnItemClickListener {
         viewLifecycleOwner.lifecycleScope.launch {
 
             /**
-             * For multiple collects, use it like this.
-             * Check SkillChartFragment if only one collect is required.
+             * We are using Flow to observe database changes here.
+             *
+             * To see how to use LiveData, check SkillChartFragment.
              */
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                skillViewModel.skills().collect {
+
+            /**
+             * When you have only one flow to collect, we can use like this.
+             */
+            skillViewModel.skillsFlow()
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collect {
                     skillsAdapter.submitList(it)
                 }
-                /**
-                 * Other collects go here
-                 */
-            }
+
+//            /**
+//             * For multiple collects, use it like this.
+//             */
+//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
+//                skillViewModel.skillsFlow().collect {
+//                    skillsAdapter.submitList(it)
+//                }
+//                /**
+//                 * Other collects go here
+//                 */
+//            }
         }
     }
 

@@ -1,5 +1,6 @@
 package br.com.lno.skillmeter.model.repository
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import br.com.lno.skillmeter.model.Skill
 import kotlinx.coroutines.flow.Flow
@@ -11,7 +12,10 @@ interface SkillDao {
     fun create(skill: Skill): Long
 
     @Query("Select * from skills")
-    fun retrieve(): Flow<List<Skill>>
+    fun retrieveFlow(): Flow<List<Skill>>
+
+    @Query("Select * from skills")
+    fun retrieveLiveData(): LiveData<List<Skill>>
 
     @Update
     fun update(skill: Skill): Int

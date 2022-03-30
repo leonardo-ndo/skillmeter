@@ -1,5 +1,6 @@
 package br.com.lno.skillmeter.model.repository
 
+import androidx.lifecycle.LiveData
 import br.com.lno.skillmeter.model.Skill
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -24,9 +25,14 @@ class SkillRepository @Inject constructor(private val skillDao: SkillDao) {
      *
      * @return A [Flow] object containing a list of [Skill]'s
      */
-    suspend fun retrieve(): Flow<List<Skill>> = withContext(Dispatchers.IO) {
-        skillDao.retrieve()
-    }
+    fun retrieveFlow(): Flow<List<Skill>> = skillDao.retrieveFlow()
+
+    /**
+     * Retrieves all [Skill]'s from the database.
+     *
+     * @return A [LiveData] object containing a list of [Skill]'s
+     */
+    fun retrieveLiveData(): LiveData<List<Skill>> = skillDao.retrieveLiveData()
 
     /**
      * Updates a Skill in the database.

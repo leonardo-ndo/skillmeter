@@ -15,7 +15,8 @@ import javax.inject.Inject
 class SkillViewModel @Inject constructor(private val skillRepository: SkillRepository) :
     ViewModel() {
 
-    val result = MutableLiveData<SkillResult>()
+    private val _result = MutableLiveData<SkillResult>()
+    val result: LiveData<SkillResult> = _result
 
     /**
      * Inserts a [Skill] to the database.
@@ -26,10 +27,19 @@ class SkillViewModel @Inject constructor(private val skillRepository: SkillRepos
      */
     fun create(skill: Skill) = viewModelScope.launch {
         try {
-            result.postValue(SkillResult.Success(skillRepository.create(skill)))
+            _result.postValue(SkillResult.Success(skillRepository.create(skill)))
         } catch (e: Exception) {
-            result.postValue(SkillResult.Error(e))
+            _result.postValue(SkillResult.Error(e))
         }
+    }
+
+    /**
+     * Retrieves all [Skill]'s from the database.
+     *
+     * @return A [Flow] object containing a list of [Skill]'s
+     */
+    fun skillsFlow(): Flow<List<Skill>> {
+        return skillRepository.retrieveFlow()
     }
 
     /**
@@ -37,8 +47,8 @@ class SkillViewModel @Inject constructor(private val skillRepository: SkillRepos
      *
      * @return A [LiveData] object containing a list of [Skill]'s
      */
-    suspend fun skills(): Flow<List<Skill>> {
-        return skillRepository.retrieve()
+    fun skillsLiveData(): LiveData<List<Skill>> {
+        return skillRepository.retrieveLiveData()
     }
 
     /**
@@ -48,9 +58,9 @@ class SkillViewModel @Inject constructor(private val skillRepository: SkillRepos
      */
     fun update(skill: Skill) = viewModelScope.launch {
         try {
-            result.postValue(SkillResult.Success(skillRepository.update(skill)))
+            _result.postValue(SkillResult.Success(skillRepository.update(skill)))
         } catch (e: Exception) {
-            result.postValue(SkillResult.Error(e))
+            _result.postValue(SkillResult.Error(e))
         }
     }
 
@@ -63,9 +73,9 @@ class SkillViewModel @Inject constructor(private val skillRepository: SkillRepos
      */
     fun delete(skill: Skill) = viewModelScope.launch {
         try {
-            result.postValue(SkillResult.Success(skillRepository.delete(skill)))
+            _result.postValue(SkillResult.Success(skillRepository.delete(skill)))
         } catch (e: Exception) {
-            result.postValue(SkillResult.Error(e))
+            _result.postValue(SkillResult.Error(e))
         }
     }
 
