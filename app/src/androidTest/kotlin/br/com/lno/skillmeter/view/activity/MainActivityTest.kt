@@ -1,15 +1,13 @@
 package br.com.lno.skillmeter.view.activity
 
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import br.com.lno.skillmeter.R
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import org.hamcrest.Matchers
 import org.junit.Rule
 import org.junit.Test
 
@@ -26,8 +24,12 @@ class MainActivityTest {
     fun testViewsVisibility() {
 
         // Fragment container
-        Espresso.onView(ViewMatchers.withId(R.id.fragment_container))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(
+            Matchers.allOf(
+                ViewMatchers.withId(R.id.nav_host_fragment),
+                ViewMatchers.isDisplayed()
+            )
+        )
 
         // Bottom bar
         Espresso.onView(ViewMatchers.withId(R.id.bottom_bar))
@@ -44,19 +46,5 @@ class MainActivityTest {
         // Float action button
         Espresso.onView(ViewMatchers.withId(R.id.fab))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-    }
-
-    @Test
-    fun testIntents() {
-
-        Intents.init()
-
-        Espresso.onView(ViewMatchers.withId(R.id.bottom_navigation_view))
-            .perform(ViewActions.click())
-
-        Intents.intended(IntentMatchers.hasComponent(InputSkillActivity::class.qualifiedName))
-
-        Intents.release()
-
     }
 }

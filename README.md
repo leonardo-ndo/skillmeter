@@ -6,6 +6,7 @@ The purpose of this project is to train the following concepts:
 
 * Material Design
 * MVVM
+* Navigation
 * View Binding
 * Room Database
 * LiveData

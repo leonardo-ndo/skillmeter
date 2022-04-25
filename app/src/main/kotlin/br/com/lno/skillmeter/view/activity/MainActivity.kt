@@ -1,13 +1,12 @@
 package br.com.lno.skillmeter.view.activity
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.forEach
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import br.com.lno.skillmeter.R
 import br.com.lno.skillmeter.databinding.ActivityMainBinding
-import br.com.lno.skillmeter.view.fragment.SkillChartFragment
-import br.com.lno.skillmeter.view.fragment.SkillListFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -15,43 +14,28 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    private val navController: NavController
+        get() {
+            val navHostFragment =
+                supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+            return navHostFragment.navController
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupViews()
+    }
+
+    private fun setupViews() {
+
         binding.fab.setOnClickListener {
-            startActivity(Intent(this, InputSkillActivity::class.java))
+            navController.navigate(R.id.input_activity)
         }
 
-        binding.bottomNavigationView.setOnItemSelectedListener {
+        binding.bottomNavigationView.setupWithNavController(navController)
 
-            // Disable current item
-            binding.bottomNavigationView.menu.forEach { menuItem ->
-                menuItem.isEnabled = menuItem.itemId != it.itemId
-            }
-
-            when (it.itemId) {
-                R.id.menu_list -> {
-                    supportFragmentManager.beginTransaction()
-                        .setCustomAnimations(
-                            android.R.anim.fade_in,
-                            android.R.anim.fade_out
-                        )
-                        .replace(R.id.fragment_container, SkillListFragment()).commit()
-                    true
-                }
-                R.id.menu_chart -> {
-                    supportFragmentManager.beginTransaction()
-                        .setCustomAnimations(
-                            android.R.anim.fade_in,
-                            android.R.anim.fade_out
-                        )
-                        .replace(R.id.fragment_container, SkillChartFragment()).commit()
-                    true
-                }
-                else -> false
-            }
-        }
     }
 }

@@ -1,20 +1,20 @@
 package br.com.lno.skillmeter.view.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import br.com.lno.skillmeter.R
 import br.com.lno.skillmeter.databinding.FragmentListBinding
 import br.com.lno.skillmeter.model.Skill
-import br.com.lno.skillmeter.view.activity.InputSkillActivity
 import br.com.lno.skillmeter.view.adapter.SkillsAdapter
 import br.com.lno.skillmeter.viewmodel.SkillViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -83,9 +83,7 @@ class SkillListFragment : Fragment(), SkillsAdapter.OnItemClickListener {
     }
 
     override fun onListItemClick(skill: Skill) {
-        val intent = Intent(context, InputSkillActivity::class.java)
-        intent.putExtra("skill", skill)
-        startActivity(intent)
+        findNavController().navigate(R.id.load_details, bundleOf("skill" to skill))
     }
 
     override fun onListItemDeleteClick(skill: Skill) {

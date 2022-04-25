@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/menu_list">
+
+    <fragment
+        android:id="@+id/menu_list"
+        android:name="br.com.lno.skillmeter.view.fragment.SkillListFragment"
+        tools:layout="@layout/fragment_list">
+        <action
+            android:id="@+id/load_details"
+            app:destination="@id/input_activity" />
+        <argument
+            android:name="skill"
+            app:argType="br.com.lno.skillmeter.model.Skill" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/menu_chart"
+        android:name="br.com.lno.skillmeter.view.fragment.SkillChartFragment"
+        tools:layout="@layout/fragment_chart" />
+
+    <activity
+        android:id="@+id/input_activity"
+        android:name="br.com.lno.skillmeter.view.activity.InputSkillActivity"
+        tools:layout="@layout/activity_main" />
+
+</navigation>
