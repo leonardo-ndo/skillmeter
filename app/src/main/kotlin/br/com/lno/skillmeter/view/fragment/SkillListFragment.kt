@@ -18,7 +18,6 @@ import br.com.lno.skillmeter.model.Skill
 import br.com.lno.skillmeter.view.adapter.SkillsAdapter
 import br.com.lno.skillmeter.viewmodel.SkillViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
